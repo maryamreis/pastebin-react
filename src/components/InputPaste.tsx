@@ -28,25 +28,28 @@ function InputPaste(): JSX.Element {
         <div> 
             <div>
                 <h1 className = "text-center mt-5">Input Paste</h1>
-                <form className = "d-flex mt-2">
-                    <input 
-                        type = "text"
-                        className = "form-control"
-                        value = {pasteText}
-                        placeholder = "paste text here"
-                        onChange = {event => setPasteText(event.target.value)}  
-                    />
-                    <input 
-                        type = "text"
-                        className = "form-control col-md-3"
-                        value = {pasteTitle}
-                        placeholder = "optional - title of text here"
-                        onChange = {event => setPasteTitle(event.target.value)}
-                            
-                    />
-                    <button
-                    onClick = {onSubmitForm}
-                    className = "btn btn-success">Save</button>
+                {/* <form className = "d-flex mt-2"> */}
+                <form>
+                    <div>
+                        <textarea className="form-control col-md-12" aria-label="With textarea" 
+                            value = {pasteText}
+                            placeholder = "paste text here"
+                            onChange = {event => setPasteText(event.target.value)}
+                        />
+                    </div>
+                    <div className= "d-flex">
+                        <input 
+                            type = "text"
+                            className = "form-control col-md-6"
+                            value = {pasteTitle}
+                            placeholder = "optional - title of text here"
+                            onChange = {event => setPasteTitle(event.target.value)}
+                                
+                        />
+                        <button
+                        onClick = {onSubmitForm}
+                        className = "btn btn-success">Save</button>
+                    </div>
                 </form>
             </div>
 

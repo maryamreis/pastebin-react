@@ -1,9 +1,10 @@
 import { getPackedSettings } from "http2";
 import React, {useState, useEffect} from "react";
+import EditPaste, { IPaste } from "./EditPaste";
 
 function ListPaste(): JSX.Element {
 
-    const [pasteList, setPasteList] = useState<any[]>([]);
+    const [pasteList, setPasteList] = useState<IPaste[]>([]);
 
     // delete function
     const deletePaste = async (id: number) => {
@@ -63,7 +64,7 @@ function ListPaste(): JSX.Element {
                         <tr key = {paste.id}>
                             <td>{paste.paste_title}</td>
                             <td>{paste.paste_text}</td>
-                            <td>Edit</td>
+                            <td><EditPaste paste={paste}/></td>
                             <td>
                                 <button 
                                     className = "btn btn-danger"
