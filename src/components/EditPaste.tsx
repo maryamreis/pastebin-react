@@ -11,26 +11,32 @@ export interface IProp{
     paste: IPaste
 }
 
+export interface IComment{
+    comment_id: number
+    comment: string
+    pasteId: number
+}
+
 function EditPaste({paste}: IProp): JSX.Element {
     
     const [title, setTitle] = useState(paste.paste_title);
     const [text, setText] = useState(paste.paste_text);
 
-    const [commentList, setCommentList] = useState("")
+    const [comment, setComment] = useState("")
+    const [commentList, setCommentList] = useState<IComment[]>([])
+    
 
     // edit paste function
     const updatePaste = async () => {
-        console.log("Hey I'm here");
         try{
             
             const body = {pasteTitle:title, pasteText:text};
-            console.log(body, paste.id);
+            
             const response = await fetch(`http://localhost:4000/pastes/${paste.id}`, {
                 method: "PUT",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
             });
-            console.log(response);
             
             
 
@@ -44,22 +50,52 @@ function EditPaste({paste}: IProp): JSX.Element {
     // get comments
     const getComments = async () => {
         try {
-            const response = await fetch("http://localhost:4000/comments");
+            const response = await fetch(`http://localhost:4000/pastes/comments/${paste.id}`);
             const jsonData = await response.json();
             
             setCommentList(jsonData)
-
-            console.log(jsonData)
+            
             
         } catch (error) {
             console.error(error.message)
         }
     };
 
-
     useEffect(() => {
         getComments();
     }, []);
+
+    const submitComment = async () => {
+        try {
+            const body = {comment, id: paste.id};
+            const response = await fetch("http://localhost:4000/pastes/comments", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(body)
+            });
+
+        } catch (error) {
+            console.error(error.message);
+            
+        }
+    };
+
+    const deleteComment = async (id: number) => {
+        try {
+            const deleteComment = await fetch(`http://localhost:4000/comments/${id}`, {
+                method: "DELETE"
+            });
+
+            setCommentList(commentList.filter(comment => comment.comment_id !== id))
+            
+        } catch (error) {
+            console.error(error.message)
+            
+        }
+    };
+
+
+    
 
 
 
@@ -103,10 +139,44 @@ function EditPaste({paste}: IProp): JSX.Element {
                         <div className="mt-3">
                             <p>Add comment</p>
                             <textarea 
-                                    className="form-control" 
-                                    onChange={event => setCommentList(event.target.value)}
+                                value = {comment}
+                                className="form-control" 
+                                placeholder = "Add comment here..."
+                                onChange={event => setComment(event.target.value)}
                                 />
-                            <h6><b>Comments</b></h6>
+                            <button
+                                type="button" 
+                                className="btn btn-warning" 
+                                onClick = {submitComment}
+                                >
+                                    Submit comment
+                            </button>
+                            
+                            <table className = "table table-striped mt-5">
+                                <thead>
+                                    <tr>
+                                        <th>Comment</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    
+                                    {commentList.map(comment => (
+                                        <tr key = {comment.comment_id}>
+                                            <td>{comment.comment}</td>
+                                            <td>
+                                                <button 
+                                                    className = "btn btn-danger"
+                                                    onClick = {() => deleteComment(comment.comment_id)}
+                                                >
+                                                        Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                             
 
                         </div>

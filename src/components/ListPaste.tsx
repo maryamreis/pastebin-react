@@ -22,7 +22,7 @@ function ListPaste(): JSX.Element {
             console.error(error.message)
             
         }
-    }
+    };
 
     // get function
     const getPastes = async () => {
